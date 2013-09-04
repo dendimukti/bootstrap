@@ -76,7 +76,7 @@
             <p class="block-heading">Sign In <font color="red"><b><?php if(!empty($pesan)) echo "- ".$pesan;?></b></font></p>
             <div class="block-body">
                 <?php				
-		        echo form_open('app/Login');
+		        echo form_open('admin/procLoginAdmin');
 				?>
                     <label>Username</label>
                     <input type="text" class="span12" name="username">

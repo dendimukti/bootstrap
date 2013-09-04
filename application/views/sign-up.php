@@ -8,12 +8,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
     
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
-    <link rel="stylesheet" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
 
-    <script src="http://<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <!-- Demo page code -->
 
@@ -37,15 +37,15 @@
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
   </head>
 
   <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
@@ -73,26 +73,24 @@
         <div class="row-fluid">
     <div class="dialog">
         <div class="block">
-            <p class="block-heading">Sign Up <?php if(!empty($pesan)) echo "- ".$pesan;?></p>
+            <p class="block-heading">Sign Up <font color="red"><b><?php if(!empty($pesan)) echo "- ".$pesan;?></b></font></p>
             <div class="block-body">
-                <?php
-				
-				//$form=array('method'=>"post");
+                <?php				
 		        echo form_open('app/procSignUp');
 				?>
                     <label>First Name</label>
-                    <input type="text" class="span12" name="first_name">
+                    <input type="text" class="span12" name="first_name" maxlength="50">
                     <label>Last Name</label>
-                    <input type="text" class="span12" name="last_name">
+                    <input type="text" class="span12" name="last_name" maxlength="50">
                     <label>Email Address</label>
-                    <input type="text" class="span12" name="email">
+                    <input type="text" class="span12" name="email" maxlength="50">
                     <label>Username</label>
-                    <input type="text" class="span12" name="username">
+                    <input type="text" class="span12" name="username" maxlength="50">
                     <label>Password</label>
-                    <input type="password" class="span12" name="password">
+                    <input type="password" class="span12" name="password" maxlength="30">
                     <label>Confirmation Password</label>
-                    <input type="password" class="span12" name="passconf">
-                    <input type="submit" value="Sign Up!" class="btn btn-primary pull-right">
+                    <input type="password" class="span12" name="passconf" maxlength="30">
+                    <input type="submit" value="Sign Up!" class="btn btn-primary pull-right" name="submit">
                     <label class="remember-me"><input type="checkbox" name="agreement"> I agree with the <a href="terms-and-conditions.html">Terms and Conditions</a></label>
                     <div class="clearfix"></div>
                 </form>
@@ -106,7 +104,7 @@
     
 
 
-    <script src="http://<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript">
         $("[rel=tooltip]").tooltip();
         $(function() {

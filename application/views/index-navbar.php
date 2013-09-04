@@ -8,12 +8,12 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
     
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
-    <link rel="stylesheet" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
 
-    <script src="http://<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <!-- Demo page code -->
 
@@ -41,11 +41,11 @@
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
   </head>
 
   <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
@@ -59,29 +59,36 @@
     <div class="navbar">
         <div class="navbar-inner">
                 <ul class="nav pull-right">
-                    <?php if($log){
+                    <?php if($log==true || $admin==true){
 									
 						?>
-                    <li><a href="#" class="hidden-phone visible-tablet visible-desktop" role="button">Settings</a></li>
+                    <li><a href="#" class="hidden-phone visible-tablet visible-desktop" role="button"><?php echo ($admin)?"Administrator":"Settings" ?></a></li>
                     <li id="fat-menu" class="dropdown">
                         <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="icon-user"></i> <?php echo $first." ".$last; ?>
+                            <i class="icon-user"></i> 
+							<?php 
+								if($admin)
+									echo $first[0]." ".$last[0];
+								else
+									echo $first_name[0]." ".$last_name[0]; 
+							?>
                             <i class="icon-caret-down"></i>
                         </a>
 
                         <ul class="dropdown-menu">
-                            <li><a tabindex="-1" href="http://<?php echo base_url();?>index.php/app/account/<?php echo $id;?>">My Account</a></li>
+                            <li><a tabindex="-1" href="<?php echo base_url();?>app/account">My Account</a></li>
                             <li class="divider"></li>
                             <li><a tabindex="-1" class="visible-phone" href="#">Settings</a></li>
                             <li class="divider visible-phone"></li>
-                            <li><a tabindex="-1" href="http://<?php echo base_url();?>index.php/app/logout">Logout</a></li>
+                            <li><a tabindex="-1" href="<?php echo base_url();?>app/logout">Logout</a></li>
                         </ul>
                     </li>
                     <?php
                     }
+                    
                     ?>
                 </ul>
-                <a class="brand" href="http://<?php echo base_url();?>"><span class="first">Your</span> <span class="second">Company</span></a>
+                <a class="brand" href="<?php echo base_url();?>"><span class="first">Your</span> <span class="second">Company</span></a>
         </div>
     </div>
     

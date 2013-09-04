@@ -27,14 +27,14 @@ class admin extends CI_Controller {
 		else{
 			$data['judul'] = "Log In Administrator";	
 			$data['pesan'] = $pesan;
-			$this->load->view('sign-in', $data);	
+			$this->load->view('sign-in-admin', $data);	
 		}
 	}
 	
 	function procLoginAdmin(){
 		if($this->session->userdata('stat')==null){		
 			$this->load->library('form_validation');
-			$this->load->model('admin');			
+			$this->load->model('adm');			
 			if($this->input->post('submit'))
 			{		
 				$this->form_validation->set_rules('username', 'Username', 'required');
@@ -44,8 +44,9 @@ class admin extends CI_Controller {
 				else{
 					$usr=$this->input->post('username');
 					$pwd=$this->input->post('password');
-					if($this->admin->logIn($usr,$pwd)){
+					if($this->adm->logIn($usr, $this->encr($pwd))){
 						$this->session->set_userdata('stat','2');
+						$this->session->set_userdata('usr',$usr);
 						redirect('admin/home');				
 					}
 					else
@@ -63,19 +64,22 @@ class admin extends CI_Controller {
 				redirect('admin/loginAdministrator');
 			}else{
 				$this->notFound();
-			}				
+			}
 	}
 	
 	function home(){		
 		if($this->session->userdata('stat')!=2)
 			$this->forbid();
 		else{
+			$this->load->model('adm');
+			$data=$this->adm->dataAdmin($this->session->userdata('usr'));
 			$data['judul'] = "Home Admin";
 			$data['log'] = false;
-			$data['admin'] = true;
+			$data['admin'] = true;			
 			$this->load->view('index-navbar', $data);
 			$this->load->view('index-sidebar', $data);
  			$this->load->view('index-content', $data);
+			$this->load->view('index-footer');
 		}	
 	}
 	
@@ -83,14 +87,41 @@ class admin extends CI_Controller {
 		if($this->session->userdata('stat')!=2)
 			$this->forbid();
 		else{
-			$data= $this->admin->dataMember("",$limit,$offset);
-			$data['judul'] = "Members";
-			$data['log'] = false;
-			$data['admin'] = true;
-			$this->load->view('index-navbar', $data);
-			$this->load->view('index-sidebar', $data);
+			$this->load->model('member');
+			$this->load->model('adm');
+			$dat=$this->adm->dataAdmin($this->session->userdata('usr'));
+			$data= $this->member->dataMember("",$limit,$offset);
+			$dat['judul'] = "Members";
+			$dat['log'] = false;
+			$dat['admin'] = true;
+			$this->load->view('index-navbar', $dat);
+			$this->load->view('index-sidebar', $dat);
  			$this->load->view('users', $data);
+			$this->load->view('index-footer');
 		}
+	}
+	
+	function domain(){
+		if($this->session->userdata('stat')!=2)
+			$this->forbid();
+		else{
+			$this->load->model('adm');
+			$dat=$this->adm->dataAdmin($this->session->userdata('usr'));
+			$data= $this->adm->dataDomain();
+			$dat['judul'] = "Domain";
+			$dat['log'] = false;
+			$dat['admin'] = true;
+			$this->load->view('index-navbar', $dat);
+			$this->load->view('index-sidebar', $dat);
+ 			$this->load->view('domain', $data);
+			$this->load->view('index-footer');
+		}
+	}
+	
+	function encr($pwd){
+		$enc=md5("program cinta".hash('sha512',$pwd));
+		$data=substr($enc,0,50);
+		return $data;
 	}
 	
 	function forbid(){

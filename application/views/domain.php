@@ -3,21 +3,19 @@
         
         <div class="header">
             
-            <h1 class="page-title">Users</h1>
+            <h1 class="page-title">Domain</h1>
         </div>
         
                 <ul class="breadcrumb">
             <li><a href="<?php echo base_url();?>">Home</a> <span class="divider">/</span></li>
-            <li class="active">Users</li>
+            <li class="active">Domain</li>
         </ul>
 
         <div class="container-fluid">
             <div class="row-fluid">
                     
 <div class="btn-toolbar">
-    <button class="btn btn-primary"><i class="icon-plus"></i> New User</button>
-    <button class="btn">Import</button>
-    <button class="btn">Export</button>
+    <button class="btn btn-primary"><i class="icon-plus"></i> New Domain</button>
   <div class="btn-group">
   </div>
 </div>
@@ -26,9 +24,8 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Username</th>
+          <th>Domain</th>
+          <th>Status</th>
           <th style="width: 26px;"></th>
         </tr>
       </thead>
@@ -39,9 +36,8 @@
       ?>
         <tr>
           <td><?php echo $i+1;?></td>
-          <td><?php echo $first_name[$i];?></td>
-          <td><?php echo $last_name[$i];?></td>
-          <td><?php echo $usr[$i];?></td>
+          <td><?php echo ".".$domain[$i];?></td>
+          <td><?php echo $status[$i];?></td>
           <td>
               <a href="user.html"><i class="icon-pencil"></i></a>
               <a href="#myModal" role="button" data-toggle="modal"><i class="icon-remove"></i></a>

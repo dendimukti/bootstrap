@@ -2,18 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap Admin</title>
+    <title><?php echo $judul;?></title>
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
     
-    <link rel="stylesheet" type="text/css" href="http://<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
-    <link rel="stylesheet" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
 
-    <script src="http://<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <!-- Demo page code -->
 
@@ -37,15 +37,15 @@
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="http://<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/docs/assets/ico/apple-touch-icon-57-precomposed.png">
   </head>
 
   <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
@@ -73,17 +73,23 @@
         <div class="row-fluid">
     <div class="dialog">
         <div class="block">
-            <p class="block-heading">Reset your password</p>
+            <p class="block-heading">Reset your password <font color="red"><b><?php if(!empty($pesan)) echo "- ".$pesan;?></b></font></p>
             <div class="block-body">
-                <form>
-                    <label>Email Address</label>
-                    <input type="text" class="span12"></input>
-                    <a href="index.html" class="btn btn-primary pull-right">Send</a>
+                <?php				
+		        echo form_open('app/procResetPwd');
+				?>
+                    <label>Old Password</label>
+                    <input type="password" class="span12" name="password">
+                    <label>New Password</label>
+                    <input type="password" class="span12" name="newpass">
+                    <label>Confirmation Password</label>
+                    <input type="password" class="span12" name="passconf">
+                    <input type="submit" value="Sign In" class="btn btn-primary pull-right" name="submit">
                     <div class="clearfix"></div>
-                </form>
+               
             </div>
         </div>
-        <a href="sign-in.html">Sign in to your account</a>
+        <a href="account">Back To Account</a>
     </div>
 </div>
 
@@ -91,7 +97,7 @@
     
 
 
-    <script src="http://<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript">
         $("[rel=tooltip]").tooltip();
         $(function() {

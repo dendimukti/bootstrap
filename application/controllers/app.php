@@ -6,7 +6,7 @@ class app extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->helper(array('form', 'url'));
-		$this->load->helper('email');
+		//$this->load->helper('email');
 		$this->load->helper('url');
 		
 	}
@@ -46,7 +46,7 @@ class app extends CI_Controller {
 			if($pesan=="required")
 				$data['pesan'] = "Invalid Input";
 			else if($pesan=="wrong")
-				$data['pesan'] = "Unmached Password";
+				$data['pesan'] = "Check Your Username and Password";
 				
 			$this->load->view('sign-in', $data);
 		}else
@@ -69,7 +69,7 @@ class app extends CI_Controller {
 					$usr=$this->input->post('username');
 					$pwd=$this->input->post('password');
 					if($this->member->logIn($usr,$pwd)){
-						$data=$this->member->dataLogIn($usr,$pwd);
+						$data=$this->member->dataLogIn($usr,$this->encr($pwd));
 						$this->session->set_userdata('stat','1');
 						$this->session->set_userdata('id',$data['id']);
 						redirect('app/');				
@@ -87,11 +87,53 @@ class app extends CI_Controller {
 	function resetPwd($pesan=""){
 		if($this->session->userdata('stat')==1){
 			$data['judul'] = "Reset Password";
-			$data['pesan'] = $pesan;
+			
+			if($pesan=="required")
+				$data['pesan'] = "Fill The Form Correctly";
+			else if($pesan=="unmacthpwd")
+				$data['pesan'] = "Check Your New Password";
+			else if($pesan=="wrongpassword")
+				$data['pesan'] = "Invalid Old Password";
+				
 			$this->load->view('reset-password', $data);	
 		}else
-			$this->forbid();
-		
+			$this->forbid();		
+	}
+	
+	
+	
+	function procResetPwd(){
+		if($this->session->userdata('stat')==1){
+			$this->load->library('form_validation');
+			$this->load->model('member');			
+			
+			if($this->input->post('submit'))
+			{				
+				$this->form_validation->set_rules('newpass', 'New Password', 'required');
+				$this->form_validation->set_rules('password', 'Password', 'required');
+				$this->form_validation->set_rules('passconf', 'Confirmation Password', 'required');
+				
+				if ($this->form_validation->run() == FALSE)
+					redirect('app/resetPwd/required');
+				else{
+					$newpass=$this->input->post('newpass');
+					$pwdconf=$this->input->post('passconf');
+					$pwd=$this->input->post('password');
+					if($this->member->cekPwd($this->session->userdata('id'),$this->encr($pwd))){
+						if($newpass!=$pwdconf)
+							redirect("app/resetPwd/unmacthpwd");
+						else{
+							$data=$this->member->changePass($this->session->userdata('id'),$this->encr($newpass));
+							redirect('app/account/');					
+						}				
+					}
+					else
+						redirect('app/resetPwd/wrongpassword');
+				}				
+			}else
+				$this->notFound();
+		}else
+			$this->notFound();
 	}
 	
 	function signUp($pesan=""){
@@ -100,7 +142,14 @@ class app extends CI_Controller {
 			if($pesan=="invalidEmail")
 				$data['pesan'] = "Invalid Email Format";
 			else if($pesan=="unmacthpwd")
-				$data['pesan'] = "Check Password";
+				$data['pesan'] = "Check Your Password";
+			else if($pesan=="invalid")
+				$data['pesan'] = "Fill The Form Correctly";
+			else if($pesan=="existEmail")
+				$data['pesan'] = "This Email Already Registered, Try Another Email";
+			else if($pesan=="existUsr")
+				$data['pesan'] = "This Usename Already Exist, Try Another Username";
+				
 			$this->load->view('sign-up', $data);
 		}else
 			$this->notFound();			
@@ -119,7 +168,8 @@ class app extends CI_Controller {
 				$this->form_validation->set_rules('first_name', 'First Name', 'required');
 				$this->form_validation->set_rules('last_name', 'Last Name', 'required');
 				$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-				
+				$this->form_validation->set_rules('agreement', 'Agreement', 'required');
+								
 				if ($this->form_validation->run() == FALSE)		
 					redirect("app/signUp/invalid");
 				else{
@@ -129,16 +179,17 @@ class app extends CI_Controller {
 					$first=$this->input->post('first_name');
 					$last=$this->input->post('last_name');
 					$email=$this->input->post('email');
-					$now=time();
-				
-					if (!valid_email($email))
-						redirect("app/signUp/invalidEmail");
-					if($pwd==$pwdconf)
+					
+					if ($this->member->cekEmail($email))
+						redirect("app/signUp/existEmail");
+					if ($this->member->cekUsr($usr))
+						redirect("app/signUp/existUsr");
+					if($pwd!=$pwdconf)
 						redirect("app/signUp/unmacthpwd");
 					
-					$this->mailer($email,"Activating Account","Test");
-					$this->member->signUp($usr,$pwd,$first,$last,$email,$now);
-					redirect('app/account');
+				//	$this->mailer($email,"Activating Account","Test");
+					$this->member->signUp($usr,$this->encr($pwd),$first,$last,$email);
+					redirect('app');
 				}					
 								
 			}else
@@ -148,30 +199,140 @@ class app extends CI_Controller {
 		
 	}
 	
-	function procEditMember($id){		
+	function account($id=""){
+		if($this->session->userdata('stat')==1){
+			$this->load->model('member');
+			$data=$this->member->dataMember($this->session->userdata('id'));
+			$data['judul'] = "Your Account";
+			$data['log'] = true;
+			$data['admin'] = false;
+			$this->load->view('index-navbar', $data);
+			$this->load->view('index-sidebar', $data);
+			$this->load->view('userEdit', $data);
+			$this->load->view('index-footer');
+		}else
+			$this->forbid();		
+	}
+	
+	function home(){		
+		if($this->session->userdata('stat')==null){			
+			$data['judul'] = "Home";
+			$data['log'] = false;
+			$data['admin'] = false;
+			$this->load->view('index-navbar', $data);
+			$this->load->view('index-sidebar', $data);
+			$this->load->view('index-content', $data);
+			$this->load->view('index-footer');
+		}else
+			redirect('app');	
+		
+	}
+	
+	function homelog(){	
+		if($this->session->userdata('stat')==1){
+			$this->load->model('member');
+			$data=$this->member->dataMember($this->session->userdata('id'));
+			$data['judul'] = "Home";
+			$data['log'] = true;
+			$data['admin'] = false;
+			$this->load->view('index-navbar', $data);
+			$this->load->view('index-sidebar', $data);
+			$this->load->view('index-content', $data);
+			$this->load->view('index-footer');
+		}
+		else
+			$this->forbid();		
+	}
+	
+	function listdomain(){
+		if($this->session->userdata('stat')==null)
+			$this->domain_nl();
+		else if($this->session->userdata('stat')==1)
+			$this->domain_l();	
+	}
+	
+	function domain_l(){
+		if($this->session->userdata('stat')==2)
+			$this->forbid();
+		else{
+			$this->load->model('adm');
+			$this->load->model('member');
+			$dat=$this->member->dataMember($this->session->userdata('id'));
+			$data= $this->adm->dataDomain();
+			$dat['judul'] = "Domain";
+			$dat['log'] = true;
+			$dat['admin'] = false;
+			$this->load->view('index-navbar', $dat);
+			$this->load->view('index-sidebar', $dat);
+ 			$this->load->view('domainlist', $data);
+			$this->load->view('index-footer');
+		}
+	}
+	
+	function domain_nl(){
+		if($this->session->userdata('stat')==2)
+			$this->forbid();
+		else{
+			$this->load->model('adm');
+			$this->load->model('member');
+			$dat=$this->member->dataMember($this->session->userdata('id'));
+			$data= $this->adm->dataDomain();
+			$dat['judul'] = "Domain";
+			$dat['log'] = false;
+			$dat['admin'] = false;
+			$this->load->view('index-navbar', $dat);
+			$this->load->view('index-sidebar', $dat);
+ 			$this->load->view('domainlist', $data);
+			$this->load->view('index-footer');
+		}
+	}
+	
+	function editMember($pesan=""){		
+		if($this->session->userdata('stat')==1){
+			$this->load->model('member');
+			$data=$this->member->dataMember($this->session->userdata('id'));
+			
+			if($pesan=="invalidEmail")
+				$data['pesan'] = "Invalid Email Format";
+			else if($pesan=="required")
+				$data['pesan'] = "Fill The Form Correctly";
+				
+			$data['judul'] = "Your Account";
+			$data['log'] = true;
+			$data['admin'] = false;
+			$this->load->view('index-navbar', $data);
+			$this->load->view('index-sidebar', $data);
+			$this->load->view('userEdit', $data);
+			$this->load->view('index-footer');
+		}else
+			$this->forbid();
+	}
+	
+	
+	function procEditMember(){		
 		if($this->session->userdata('stat')==1){
 			$this->load->library('form_validation');
 			$this->load->model('member');
-			
+			$id=$this->session->userdata('id');
 			if($this->input->post('submit')){				
 				$this->form_validation->set_rules('first_name', 'First Name', 'required');
 				$this->form_validation->set_rules('last_name', 'Last Name', 'required');
 				$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+				//$this->form_validation->set_rules('address', 'Address', 'required');
 				
-				if ($this->form_validation->run() == FALSE)
-					redirect("app/procEditMember/".$id);
+				if ($this->form_validation->run() == FALSE){
+					redirect("app/editMember/required");
+				}					
 				else{
 					if($this->input->post('submit'))
 					{
 						$first=$this->input->post('first_name');
 						$last=$this->input->post('last_name');
 						$email=$this->input->post('email');
+						$addr=$this->input->post('address');				
 						
-						if (!valid_email($email))
-							redirect("app/procEditMember/invalidEmail");
-						
-						$this->member->editMember($id,$first,$last,$email);
-						redirect('app/account');
+						$this->member->editMember($id,$first,$last,$email,$addr);
+						redirect('app/account/');
 					}
 				}
 			}else
@@ -180,55 +341,11 @@ class app extends CI_Controller {
 			$this->notFound();
 	}
 	
-	function account($id){
-		if($this->session->userdata('stat')==1){
-			$data['judul'] = "Your Account";
-			$data['log'] = true;
-			$data['admin'] = false;
-			$this->load->view('index-navbar', $data);
-			$this->load->view('index-sidebar', $data);
-			$this->load->view('user', $data);
-		}else
-			$this->forbid();		
-	}
 	
-	function home(){		
-		if($this->session->userdata('stat')==null){
-			$data['judul'] = "Home";
-			$data['log'] = false;
-			$data['admin'] = false;
-			$this->load->view('index-navbar', $data);
-			$this->load->view('index-sidebar', $data);
-			$this->load->view('index-content', $data);
-		}else
-			redirect('app');	
-		
-	}
-	
-	function homelog(){		
-		if($this->session->userdata('stat')==1){
-			$data=$this->member->dataMember($this->session->userdata('id'));
-		$data['judul'] = "Home";
-		$data['log'] = true;
-		$data['admin'] = false;
-			$this->load->view('index-navbar', $data);
-			$this->load->view('index-sidebar', $data);
-			$this->load->view('index-content', $data);
-		}
-		else
-			$this->forbid();		
-	}
-	
-	function editMember(){		
-		if($this->session->userdata('stat')==1){
-			$data['judul'] = "Edit Data Member";
-			$data['log'] = true;
-			$data['admin'] = false;
-			$this->load->view('index-navbar', $data);
-			$this->load->view('index-sidebar', $data);
-			$this->load->view('user', $data);
-		}else
-			$this->forbid();
+	function encr($pwd){
+		$enc=md5("program cinta".hash('sha512',$pwd));
+		$data=substr($enc,0,50);
+		return $data;
 	}
 	
 	function forbid(){		
@@ -238,5 +355,4 @@ class app extends CI_Controller {
 	function notFound(){		
 		$this->load->view('404');
 	}
-	
 }
