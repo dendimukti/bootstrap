@@ -244,21 +244,32 @@ class app extends CI_Controller {
 			$this->forbid();		
 	}
 	
-	function listdomain(){
+	function listdomain($page=1){
 		if($this->session->userdata('stat')==null)
-			$this->domain_nl();
+			$this->domain_nl($page);
 		else if($this->session->userdata('stat')==1)
-			$this->domain_l();	
+			$this->domain_l($page);	
 	}
 	
-	function domain_l(){
+	function domain_l($page){
 		if($this->session->userdata('stat')==2)
 			$this->forbid();
 		else{
 			$this->load->model('adm');
 			$this->load->model('member');
 			$dat=$this->member->dataMember($this->session->userdata('id'));
-			$data= $this->adm->dataDomain();
+			
+			$limit=($page-1)*10;
+			
+			$data= $this->adm->dataDomain('',$limit,10);
+			
+			$jml=$this->adm->getTotDomain();
+			$hal=0;
+			for($i=0;$i<=$jml;$i=$i+10)
+				$hal++;
+			$data['totpage']=$hal;
+			$data['page']=$page;
+			//$data['page']=($this->adm->getTotDomain()-($this->adm->getTotDomain() % 10) /10) + 1;
 			$dat['judul'] = "Domain";
 			$dat['log'] = true;
 			$dat['admin'] = false;
@@ -269,14 +280,25 @@ class app extends CI_Controller {
 		}
 	}
 	
-	function domain_nl(){
+	function domain_nl($page){
 		if($this->session->userdata('stat')==2)
 			$this->forbid();
 		else{
 			$this->load->model('adm');
 			$this->load->model('member');
-			$dat=$this->member->dataMember($this->session->userdata('id'));
-			$data= $this->adm->dataDomain();
+			$dat=$this->member->dataMember($this->session->userdata('id'));		
+			
+			$limit=($page-1)*10;
+				
+			$data= $this->adm->dataDomain('',$limit,10);
+			
+			$jml=$this->adm->getTotDomain();
+			$hal=0;
+			for($i=0;$i<=$jml;$i=$i+10)
+				$hal++;
+			$data['totpage']=$hal;
+			$data['page']=$page;
+			//$data['page']=($this->adm->getTotDomain()-($this->adm->getTotDomain() % 10) /10) + 1;
 			$dat['judul'] = "Domain";
 			$dat['log'] = false;
 			$dat['admin'] = false;

@@ -36,14 +36,14 @@ class adm extends CI_Model {
 		return $data;
     }
 
-	function dataDomain($id="")
+	function dataDomain($id="",$limit=0,$offset=10)
     {
     	$q="";
     	if(!empty($id))
     		$q=" where id='$id'";
     	
     	$data="";
-    	$query = $this->db->query("select * from domain ".$q);    	
+    	$query = $this->db->query("select * from domain ".$q." limit ".$limit.",".$offset);    	
     		
 		if ($query->num_rows() > 0)
 		{
@@ -56,6 +56,14 @@ class adm extends CI_Model {
 		}
 		return $data;
     }
+    
+    function getTotDomain(){
+		$data="";
+		
+    	$query = $this->db->query("select * from domain");
+		$data=$query->num_rows();	
+		return $data;
+	}
 	
     function changePass($id,$newpwd)
     {

@@ -35,7 +35,7 @@
       	for($i=0;$i<count($id);$i++){
       ?>
         <tr>
-          <td><?php echo $i+1;?></td>
+          <td><?php echo ($i+1)+(($page-1)*10);?></td>
           <td><?php echo ".".$domain[$i];?></td>
           <td><?php echo $status[$i];?></td>
           <td>
@@ -50,13 +50,11 @@
     </table>
 </div>
 <div class="pagination">
-    <ul>
-        <li><a href="#">Prev</a></li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">Next</a></li>
+<font color="red"></font>
+    <ul>    
+    <?php for($i=1;$i<=$totpage;$i++){
+        echo "<li><a href=\"".base_url()."admin/domain/$i\">".$i."</a></li>";
+     } ?>
     </ul>
 </div>
 

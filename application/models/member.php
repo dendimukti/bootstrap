@@ -61,6 +61,14 @@ class member extends CI_Model {
 		}
 		return $data;
     }
+    
+    function getTotMember(){
+		$data="";
+		
+    	$query = $this->db->query("select * from member");
+		$data=$query->num_rows();	
+		return $data;
+	}
 
     function signUp($usr,$pwd,$first,$last,$email)
     {		

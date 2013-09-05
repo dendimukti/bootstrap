@@ -30,7 +30,7 @@
       	for($i=0;$i<count($id);$i++){
       ?>
         <tr>
-          <td><?php echo $i+1;?></td>
+          <td><?php echo ($i+1)+(($page-1)*10);?></td>
           <td><?php echo ".".$domain[$i];?></td>
           <td><?php echo $status[$i];?></td>
         </tr>
@@ -40,7 +40,14 @@
       </tbody>
     </table>
 </div>
-
+<div class="pagination">
+<font color="red"></font>
+    <ul>    
+    <?php for($i=1;$i<=$totpage;$i++){
+        echo "<li><a href=\"".base_url()."app/listdomain/$i\">".$i."</a></li>";
+     } ?>
+    </ul>
+</div>
 
 <div class="modal small hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">

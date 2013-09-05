@@ -83,14 +83,24 @@ class admin extends CI_Controller {
 		}	
 	}
 	
-	function members($limit=0,$offset=10){		
+	function members($page=1){		
 		if($this->session->userdata('stat')!=2)
 			$this->forbid();
 		else{
 			$this->load->model('member');
 			$this->load->model('adm');
 			$dat=$this->adm->dataAdmin($this->session->userdata('usr'));
-			$data= $this->member->dataMember("",$limit,$offset);
+			
+			$limit=($page-1)*10;
+			$data= $this->member->dataMember("",$limit,10);
+			$jml=$this->member->getTotMember();
+			$hal=0;
+			for($i=0;$i<=$jml;$i=$i+10)
+				$hal++;
+			$data['totpage']=$hal;
+			$data['page']=$page;
+			
+			
 			$dat['judul'] = "Members";
 			$dat['log'] = false;
 			$dat['admin'] = true;
@@ -101,13 +111,22 @@ class admin extends CI_Controller {
 		}
 	}
 	
-	function domain(){
+	function domain($page=1){
 		if($this->session->userdata('stat')!=2)
 			$this->forbid();
 		else{
 			$this->load->model('adm');
 			$dat=$this->adm->dataAdmin($this->session->userdata('usr'));
-			$data= $this->adm->dataDomain();
+			
+			$limit=($page-1)*10;
+			$data= $this->adm->dataDomain('',$limit,10);
+			$jml=$this->adm->getTotDomain();
+			$hal=0;
+			for($i=0;$i<=$jml;$i=$i+10)
+				$hal++;
+			$data['totpage']=$hal;
+			$data['page']=$page;
+			
 			$dat['judul'] = "Domain";
 			$dat['log'] = false;
 			$dat['admin'] = true;
