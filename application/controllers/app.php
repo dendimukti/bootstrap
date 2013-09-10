@@ -7,8 +7,9 @@ class app extends CI_Controller {
 		$this->load->library('session');
 		$this->load->helper(array('form', 'url'));
 		//$this->load->helper('email');
+        $this->load->library('email');
 		$this->load->helper('url');
-		
+		$this->load->helper('cookie');
 	}
 	
 	public function index()
@@ -16,7 +17,32 @@ class app extends CI_Controller {
 		$this->_is_logged_in();
 	}
 	
-	
+	function mailer($from,$name,$to,$cc,$bcc,$subject,$message){
+		$config['protocol'] = 'smtp';
+		$config['smtp_host'] = 'ssl://smtp.googlemail.com';
+		$config['smtp_port'] = 465;
+		$config['smtp_user'] = 'dendimukti@gmail.com';
+		$config['smtp_pass'] = '*************';
+		$config['priority'] = 1;
+		$config['mailtype'] = 'text';
+		$config['charset'] = 'iso-8859-1';
+		$config['wordwrap'] = TRUE;
+		$this->load->library('email', $config);
+		$this->email->set_newline("\r\n");
+		
+		$this->email->from($from, $name);
+		$this->email->to($to); 		
+		$this->email->cc($cc); 
+		$this->email->bcc($bcc); 
+		$this->email->subject($subject);
+		$this->email->message($message);	
+		
+		//$this->email->send();
+		
+		if(!$this->email->send()) {
+			show_error($this->email->print_debugger());
+		}
+	}
 	public function _is_logged_in(){
 		
 		$this->load->helper('url');		
@@ -26,7 +52,7 @@ class app extends CI_Controller {
 		else if($sess==2)
 			redirect('admin','refresh');
 		else
-			$this->home();
+			$this->formLogin();
 	}
 	
 	function logout(){
@@ -42,7 +68,8 @@ class app extends CI_Controller {
 	function formLogin($pesan=""){		
 		if($this->session->userdata('stat')==null){
 			$data['judul'] = "Log In";
-		
+			$data['username'] = $this->input->cookie('username');
+			$data['password'] = $this->input->cookie('password');			
 			if($pesan=="required")
 				$data['pesan'] = "Invalid Input";
 			else if($pesan=="wrong")
@@ -69,15 +96,22 @@ class app extends CI_Controller {
 					$usr=$this->input->post('username');
 					$pwd=$this->input->post('password');
 					if($this->member->logIn($usr,$pwd)){
-						$data=$this->member->dataLogIn($usr,$this->encr($pwd));
+						$data=$this->member->dataLogIn($usr,$this->member->encr($pwd));
 						$this->session->set_userdata('stat','1');
 						$this->session->set_userdata('id',$data['id']);
+						
+						if(isset($_POST['rememberme'])){
+							
+							$this->input->set_cookie('username', $usr);
+							$this->input->set_cookie('password', $pwd);
+							//setcookie('password', $pwd, 1209600);
+						}
+						
 						redirect('app/');				
 					}
 					else
 						redirect('app/formLogin/wrong');
-				}	
-				
+				}				
 			}else
 				$this->notFound();
 		}else
@@ -119,13 +153,13 @@ class app extends CI_Controller {
 					$newpass=$this->input->post('newpass');
 					$pwdconf=$this->input->post('passconf');
 					$pwd=$this->input->post('password');
-					if($this->member->cekPwd($this->session->userdata('id'),$this->encr($pwd))){
+					if($this->member->cekPwd($this->session->userdata('id'),$this->member->encr($pwd))){
 						if($newpass!=$pwdconf)
 							redirect("app/resetPwd/unmacthpwd");
 						else{
-							$data=$this->member->changePass($this->session->userdata('id'),$this->encr($newpass));
+							$data=$this->member->changePass($this->session->userdata('id'),$this->member->encr($newpass));
 							redirect('app/account/');					
-						}				
+						}
 					}
 					else
 						redirect('app/resetPwd/wrongpassword');
@@ -154,6 +188,55 @@ class app extends CI_Controller {
 		}else
 			$this->notFound();			
 	}
+	
+	function forgotPassword($pesan=""){
+		if($this->session->userdata('stat')==null){
+			$data['judul'] = "Forgot Your Password ?";	
+			if($pesan=="notExistEmail")
+				$data['pesan'] = "This Email Address doesn't Registered";
+			else if($pesan=="invalid")
+				$data['pesan'] = "Email Format is Invalid";
+			$this->load->view('forgot-password', $data);
+		}else
+			$this->notFound();			
+	}
+	
+	function procForgotPassword(){
+		if($this->session->userdata('stat')==null){
+			$this->load->library('form_validation');
+			$this->load->model('member');
+			
+			if($this->input->post('submit'))
+			{
+				$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+								
+				if ($this->form_validation->run() == FALSE)		
+					redirect("app/forgotPassword/invalid");
+				else{
+					$from="dendimukti@gmail.com";
+					$name="company";
+					$to=$this->input->post('email');
+					$cc="";
+					$bcc="";
+					$subj="new password";
+					$msg=$this->member->kode();
+					$dat=$this->member->dataMemberByEmail($to);
+					if ($this->member->cekEmail($to)){
+						$this->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
+						$this->member->changePass($dat['id'][0],$this->member->encr($msg));
+						redirect("app/formLogin");
+					}else
+						redirect("app/forgotPassword/notExistEmail");
+
+					redirect('app');
+				}								
+			}else
+				$this->notFound();
+		}else
+			$this->notFound();	
+	}
+	
+	
 	
 	function procSignUp($pesan=""){		
 		if($this->session->userdata('stat')==null){
@@ -188,7 +271,7 @@ class app extends CI_Controller {
 						redirect("app/signUp/unmacthpwd");
 					
 				//	$this->mailer($email,"Activating Account","Test");
-					$this->member->signUp($usr,$this->encr($pwd),$first,$last,$email);
+					$this->member->signUp($usr,$this->member->encr($pwd),$first,$last,$email);
 					redirect('app');
 				}					
 								
@@ -243,14 +326,14 @@ class app extends CI_Controller {
 		else
 			$this->forbid();		
 	}
-	
+	/*
 	function listdomain($page=1){
 		if($this->session->userdata('stat')==null)
 			$this->domain_nl($page);
 		else if($this->session->userdata('stat')==1)
 			$this->domain_l($page);	
 	}
-	
+	*/
 	function domain_l($page){
 		if($this->session->userdata('stat')==2)
 			$this->forbid();
@@ -363,12 +446,7 @@ class app extends CI_Controller {
 			$this->notFound();
 	}
 	
-	
-	function encr($pwd){
-		$enc=md5("program cinta".hash('sha512',$pwd));
-		$data=substr($enc,0,50);
-		return $data;
-	}
+
 	
 	function forbid(){		
 		$this->load->view('403');

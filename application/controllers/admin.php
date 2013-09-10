@@ -137,6 +137,83 @@ class admin extends CI_Controller {
 		}
 	}
 	
+	function delDomain($id){
+		if($this->session->userdata('stat')!=2)
+			$this->forbid();
+		else{
+			$this->load->model('adm');
+			$this->adm->deleteDomain($id);
+			redirect('admin/domain');
+		}
+	}
+	
+	function editDomain($id,$page){
+		if($this->session->userdata('stat')!=2)
+			$this->forbid();
+		else{
+			$this->load->model('adm');	
+			$data=$this->adm->dataDomain($id);
+			$data['admin'] = true;
+			$data['page'] = $page;
+ 			$this->load->view('editDomain', $data);
+		}
+	}
+	
+	function procEditDomain(){
+		if($this->session->userdata('stat')==2){		
+			$this->load->library('form_validation');
+			$this->load->model('adm');			
+			if($this->input->post('submit'))
+			{		
+				$this->form_validation->set_rules('domain', 'domain', 'required');
+				$this->form_validation->set_rules('status', 'status', 'required');
+				if ($this->form_validation->run() == FALSE)		
+					redirect('admin/domain');
+				else{
+					$domain=$this->input->post('domain');
+					$status=$this->input->post('status');
+					$id=$this->input->post('id');
+					$page=$this->input->post('page');
+					$this->adm->editDomain($id,$domain,$status);
+					redirect('admin/domain/'.$page);					
+				}				
+			}else
+				$this->notFound();			
+		}else
+			$this->notFound();
+	}
+	
+	function addDomain(){
+		if($this->session->userdata('stat')==2){		
+			$this->load->library('form_validation');
+			$this->load->model('adm');			
+			if($this->input->post('submit'))
+			{		
+				$this->form_validation->set_rules('domain', 'domain', 'required');
+				if ($this->form_validation->run() == FALSE)		
+					redirect('admin/domain#baten');
+				else{
+					$domain=$this->input->post('domain');
+					$page=$this->input->post('page');
+					$this->adm->addDomain($domain);
+					redirect('admin/domain/'.$page);					
+				}				
+			}else
+				$this->notFound();			
+		}else
+			$this->notFound();	
+	}
+	
+	function newDomain($page){
+		if($this->session->userdata('stat')!=2)
+			$this->forbid();
+		else{
+			$dat['admin'] = true;
+			$dat['page'] = $page;
+ 			$this->load->view('newDomain', $dat);
+		}
+	}
+	
 	function encr($pwd){
 		$enc=md5("program cinta".hash('sha512',$pwd));
 		$data=substr($enc,0,50);

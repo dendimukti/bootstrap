@@ -8,12 +8,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">
-    
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/lib/bootstrap/css/bootstrap.css">    
     <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>BlackTieAdmin/build/stylesheets/theme.css">
     <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
-
-    <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
+    
+	<script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <!-- Demo page code -->
 
@@ -76,8 +75,14 @@
                         </a>
 
                         <ul class="dropdown-menu">
-                            <li><a tabindex="-1" href="<?php echo base_url();?>app/account">My Account</a></li>
+                        <?php
+                        if($admin==false){
+                        ?>
+                        	<li><a tabindex="-1" href="<?php echo base_url();?>app/account">My Account</a></li>
                             <li class="divider"></li>
+                        <?php
+                        }
+                        ?>
                             <li><a tabindex="-1" class="visible-phone" href="#">Settings</a></li>
                             <li class="divider visible-phone"></li>
                             <li><a tabindex="-1" href="<?php echo base_url();?>app/logout">Logout</a></li>

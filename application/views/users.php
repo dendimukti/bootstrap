@@ -55,7 +55,11 @@
 <font color="red"></font>
     <ul>    
     <?php for($i=1;$i<=$totpage;$i++){
-        echo "<li><a href=\"".base_url()."admin/members/$i\">".$i."</a></li>";
+    	if($i==$page)
+    		echo "<li><a><font color='black'>".$i."</font></a></li>";
+    	else
+       		echo "<li><a href=\"".base_url()."admin/members/$i\">".$i."</a></li>";
+        
      } ?>
     </ul>
 </div>

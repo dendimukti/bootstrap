@@ -4,7 +4,6 @@ class member extends CI_Model {
 	function __construct()
     {
         parent::__construct();
-        $this->load->library('email');
         $this->load->database();
     }
     
@@ -16,6 +15,31 @@ class member extends CI_Model {
 		else
 			return false;	
     }
+    
+    function kode(){
+		$data=array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+		$kode="";
+		for($a=1;$a<=10;$a++)
+			$kode .= $data[rand(0,35)];
+		return $kode;
+	}
+	
+	function generate_kode($kd){
+		$enc=$this->encr($kd);
+		$que_cek=mysql_query("select * from member where password='$enc'");
+		$data=mysql_num_rows($que_cek);
+		if($data==0)
+			return $kd;
+		else
+			$this->generate_kode($this->kode());
+	}
+    
+    	
+	function encr($pwd){
+		$enc=md5("program cinta".hash('sha512',$pwd));
+		$data=substr($enc,0,50);
+		return $data;
+	}
     
     function dataLogIn($usr,$pwd)
     {    	
@@ -45,6 +69,27 @@ class member extends CI_Model {
     	else
     		$query = $this->db->query("select * from member limit ".$limit.",".$offset);
     		
+		if ($query->num_rows() > 0)
+		{
+		   foreach ($query->result() as $row)
+		   {
+		      $data['id'][]=$row->id;
+		      $data['usr'][]=$row->username;
+		      $data['first_name'][]=$row->first_nm;
+		      $data['last_name'][]=$row->last_nm;
+		      $data['email'][]=$row->email;
+		      $data['status'][]=$row->status;
+		      $data['join'][]=$row->join_date;  
+		      $data['address'][]=$row->address;  
+		   }
+		}
+		return $data;
+    }
+    
+    function dataMemberByEmail($email)
+    {    
+   		$query = $this->db->query("select * from member where email='".$email."'");
+    	$data="";	
 		if ($query->num_rows() > 0)
 		{
 		   foreach ($query->result() as $row)
@@ -115,14 +160,7 @@ class member extends CI_Model {
 			return false;			
     }
     
-    function mailer($email,$subject,$message){
-		$this->email->from('your@example.com', 'Your Name');
-		$this->email->to($email); 		
-		$this->email->subject($subject);
-		$this->email->message($message);	
-		
-		$this->email->send();
-	}
+
     
     
 }

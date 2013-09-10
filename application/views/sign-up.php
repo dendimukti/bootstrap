@@ -14,7 +14,129 @@
     <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
 
     <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
-
+<script>
+	$(document).ready(function(){
+		$('#agree').click(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#first').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#last').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();			
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#email').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#username').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#password').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+		$('#passconf').keyup(function(){
+			var first = $('#first').val();
+			var last = $('#last').val();
+			var email = $('#email').val();
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var passconf = $('#passconf').val();
+			var agree = document.getElementById('agree');
+			
+			if(first=="" || last=="" || email=="" || username=="" || password=="" || passconf=="" || agree.checked==false){
+				document.getElementById("submit").disabled=true;
+			}else{
+				document.getElementById("submit").disabled=false;
+			}
+		})
+		
+		
+	});
+</script>
     <!-- Demo page code -->
 
     <style type="text/css">
@@ -79,23 +201,24 @@
 		        echo form_open('app/procSignUp');
 				?>
                     <label>First Name</label>
-                    <input type="text" class="span12" name="first_name" maxlength="50">
+                    <input type="text" class="span12" name="first_name" maxlength="50" id="first">
                     <label>Last Name</label>
-                    <input type="text" class="span12" name="last_name" maxlength="50">
+                    <input type="text" class="span12" name="last_name" maxlength="50" id="last">
                     <label>Email Address</label>
-                    <input type="text" class="span12" name="email" maxlength="50">
+                    <input type="text" class="span12" name="email" maxlength="50" id="email">
                     <label>Username</label>
-                    <input type="text" class="span12" name="username" maxlength="50">
+                    <input type="text" class="span12" name="username" maxlength="50" id="username">
                     <label>Password</label>
-                    <input type="password" class="span12" name="password" maxlength="30">
+                    <input type="password" class="span12" name="password" maxlength="30" id="password">
                     <label>Confirmation Password</label>
-                    <input type="password" class="span12" name="passconf" maxlength="30">
-                    <input type="submit" value="Sign Up!" class="btn btn-primary pull-right" name="submit">
-                    <label class="remember-me"><input type="checkbox" name="agreement"> I agree with the <a href="terms-and-conditions.html">Terms and Conditions</a></label>
+                    <input type="password" class="span12" name="passconf" maxlength="30" id="passconf">
+                    <input type="submit" value="Sign Up!" class="btn btn-primary pull-right" name="submit" id="submit" disabled="">
+                    <label class="remember-me"><input type="checkbox" name="agreement" id="agree"> I agree with the <a href="terms-and-conditions.html">Terms and Conditions</a></label>
                     <div class="clearfix"></div>
                 </form>
             </div>
         </div>
+        <p class="pull-right" style=""><a href="<?php echo base_url()?>">Have an account?</a></p>
         <p><a href="privacy-policy.html">Privacy Policy</a></p>
     </div>
 </div>

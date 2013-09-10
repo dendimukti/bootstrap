@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 06, 2013 at 08:04 AM
+-- Generation Time: Sep 10, 2013 at 10:59 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `domain` (
   `domain` varchar(30) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 --
 -- Dumping data for table `domain`
@@ -73,7 +73,11 @@ INSERT INTO `domain` (`id`, `domain`, `status`) VALUES
 (10, 'my', 1),
 (11, 'id', 1),
 (12, 'us', 1),
-(13, 'ws', 1);
+(13, 'ws', 1),
+(15, 'xyz', 1),
+(16, 'cik', 3),
+(17, 'cuk', 1),
+(18, 'cak', 4);
 
 -- --------------------------------------------------------
 
@@ -92,15 +96,14 @@ CREATE TABLE IF NOT EXISTS `member` (
   `join_date` datetime NOT NULL,
   `address` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `member`
 --
 
 INSERT INTO `member` (`id`, `username`, `password`, `first_nm`, `last_nm`, `status`, `email`, `join_date`, `address`) VALUES
-(2, 'arema', '498e0e03b0854d44d2bd59062dc39c1f', 'rudi', 'widodo', '0', 'roed@gmail.com', '2013-09-03 22:52:08', 'jalan jalan j'),
-(3, 'kakakaka', '9f5883075f79866dc54af13347f2fdaa', 'kkk', 'yyy', '0', 'kaka@amail.com', '2013-09-04 21:23:46', '');
+(4, 'dendimukti', '498e0e03b0854d44d2bd59062dc39c1f', 'dendi', 'mukti', '0', 'dendimuktip@gmail.com', '2013-09-10 15:03:42', 'jalan dano rano');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

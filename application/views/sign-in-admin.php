@@ -14,7 +14,29 @@
     <link rel="stylesheet" href="<?php echo base_url();?>BlackTieAdmin/build/lib/font-awesome/css/font-awesome.css">
 
     <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
-
+<script>
+	$(document).ready(function(){
+		$('#username').keyup(function(){
+			var password = $('#password').val();
+			var username = $('#username').val();
+			if(password=="" || username==""){
+				document.getElementById("ok").disabled=true;
+			}else{
+				document.getElementById("ok").disabled=false;
+			}
+		})
+		
+		$('#password').keyup(function(){			
+			var password = $('#password').val();
+			var username = $('#username').val();
+			if(password=="" || username==""){
+				document.getElementById("ok").disabled=true;
+			}else{
+				document.getElementById("ok").disabled=false;
+			}
+		});
+	});
+</script>
     <!-- Demo page code -->
 
     <style type="text/css">
@@ -79,17 +101,16 @@
 		        echo form_open('admin/procLoginAdmin');
 				?>
                     <label>Username</label>
-                    <input type="text" class="span12" name="username">
+                    <input type="text" class="span12" name="username" id="username">
                     <label>Password</label>
-                    <input type="password" class="span12" name="password">                    
-                    <input type="submit" value="Sign In" class="btn btn-primary pull-right" name="submit">
-                    <label class="remember-me"><input type="checkbox"> Remember me</label>
+                    <input type="password" class="span12" name="password" id="password">                    
+                    <input type="submit" value="Sign In" class="btn btn-primary pull-right" name="submit" id="ok" disabled="">
+                    <label class="remember-me"><input type="checkbox" name="remember_adm" value="remember_adm"> Remember me</label>
                     <div class="clearfix"></div>
                 
             </div>
         </div>
         <p class="pull-right" style=""><a href="www.portnine.com" target="blank">Theme by Portnine</a></p>
-        <p><a href="reset-password.html">Forgot your password?</a></p>
     </div>
 </div>
 

@@ -65,6 +65,21 @@ class adm extends CI_Model {
 		return $data;
 	}
 	
+	function addDomain($domain)
+    {		
+        $this->db->query("insert into domain values('','$domain','1')");
+    }
+    
+	function editDomain($id, $domain, $stat)
+    {		
+        $this->db->query("update domain set domain='$domain', status='$stat' where id='$id'");
+    }
+    
+	function deleteDomain($id)
+    {		
+        $this->db->query("delete from domain where id='$id'");
+    }
+	
     function changePass($id,$newpwd)
     {
         $this->db->query("update admin set password='$newpwd' where id='$id'");

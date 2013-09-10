@@ -15,24 +15,13 @@
 
     <script src="<?php echo base_url();?>BlackTieAdmin/build/lib/jquery-1.7.2.min.js" type="text/javascript"></script>
 <script>
-	$(document).ready(function(){
-		$('#username').keyup(function(){
-			var password = $('#password').val();
-			var username = $('#username').val();
-			if(password=="" || username==""){
-				document.getElementById("ok").disabled=true;
+	$(document).ready(function(){		
+		$('#email').keyup(function(){
+			var email = $('#email').val();
+			if(email==""){
+				document.getElementById("submit").disabled=true;
 			}else{
-				document.getElementById("ok").disabled=false;
-			}
-		})
-		
-		$('#password').keyup(function(){			
-			var password = $('#password').val();
-			var username = $('#username').val();
-			if(password=="" || username==""){
-				document.getElementById("ok").disabled=true;
-			}else{
-				document.getElementById("ok").disabled=false;
+				document.getElementById("submit").disabled=false;
 			}
 		});
 	});
@@ -95,29 +84,22 @@
         <div class="row-fluid">
     <div class="dialog">
         <div class="block">
-            <p class="block-heading">Sign In <font color="red"><b><?php if(!empty($pesan)) echo "- ".$pesan;?></b></font></p>
+            <p class="block-heading">Forgot your password ?<font color="red"><b><?php if(!empty($pesan)) echo "- ".$pesan;?></b></font></p>
             <div class="block-body">
                 <?php				
-		        echo form_open('app/Login');
+		        echo form_open('app/procForgotPassword');
 				?>
-                    <label>Username</label>
-                    <input type="text" class="span12" name="username" id="username" value="<?php
-                    echo $username; ?>">
-                    <label>Password</label>
-                    <input type="password" class="span12" name="password" id="password" value="<?php echo $password;?>">                    
-                    <input type="submit" value="Sign In" class="btn btn-primary pull-right" name="submit" id="ok" disabled="">
-                    <label class="remember-me"><input type="checkbox" name="rememberme" value="rememberme"> Remember me</label>
-                    
-                    <div class="clearfix"></div><br>
-                    
-					Not Member ? <a href="<?php echo base_url();?>app/signUp" class="btn">Sign Up</a>
+                    <label>Your Email</label>
+                    <input type="text" class="span12" name="email" id="email">
+                    <input type="submit" value="Send" class="btn btn-primary pull-right" name="submit" disabled="" id="submit">
+                    <div class="clearfix"></div>
+            </div>
+            <p class="block-heading" align="left">
+			We'll Send your password to your email
 				
 			</p>
-            </div>
-            
         </div>
-        <p class="pull-right" style=""><a href="www.portnine.com" target="blank">Theme by Portnine</a></p>
-        <p><a href="<?php echo base_url();?>app/forgotPassword">Forgot your password?</a></p>
+        <a href="<?php echo base_url()?>">Sign in to your account</a>
     </div>
 </div>
 

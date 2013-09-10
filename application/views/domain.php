@@ -1,3 +1,47 @@
+    <link rel="stylesheet" href="<?php echo base_url();?>jquery-ui-1.8.1.custom/css/custom-theme/jquery-ui-1.8.1.custom.css">
+    <script src="<?php echo base_url();?>jquery-ui-1.8.1.custom/js/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="<?php echo base_url();?>jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js" type="text/javascript"></script>
+
+<script>
+	$(document).ready(function(){
+		$('#baten').click(function(){
+			$('#new').html('');
+			var alamat = $(this).parents().attr('href');
+			$('#new').load(alamat);
+			$('#new').dialog('destroy');
+			$('#new').dialog({
+			
+			modal : true,
+			height :380,
+			width : 500,
+			title : "New Domain",
+			});
+			return false;
+		});
+		
+      <?php
+      	for($a=0;$a<count($id);$a++){
+      ?>
+		$('#edt<?php echo $id[$a];?>').click(function(){
+			$('#new').html('');
+			var alamat = $(this).parents().attr('href');
+			$('#new').load(alamat);
+			$('#new').dialog('destroy');
+			$('#new').dialog({
+			
+			modal : true,
+			height :380,
+			width : 500,
+			title : "Edit Domain",
+			});
+			return false;
+		});
+		<?php
+        }
+        ?>
+	});
+</script>
+<div id="new"></div>
 
     <div class="content">
         
@@ -15,7 +59,9 @@
             <div class="row-fluid">
                     
 <div class="btn-toolbar">
-    <button class="btn btn-primary"><i class="icon-plus"></i> New Domain</button>
+    <a href="<?php echo base_url();?>admin/newDomain/<?php echo $totpage;?>">
+		<button class="btn btn-primary" id="baten"><i class="icon-plus"></i> New Domain</button>
+	</a>
   <div class="btn-group">
   </div>
 </div>
@@ -31,7 +77,6 @@
       </thead>
       <tbody>
       <?php
-      //print_r($usr);
       	for($i=0;$i<count($id);$i++){
       ?>
         <tr>
@@ -39,8 +84,8 @@
           <td><?php echo ".".$domain[$i];?></td>
           <td><?php echo $status[$i];?></td>
           <td>
-              <a href="user.html"><i class="icon-pencil"></i></a>
-              <a href="#myModal" role="button" data-toggle="modal"><i class="icon-remove"></i></a>
+              <a href="<?php echo base_url();?>admin/editDomain/<?php echo $id[$i]."/".$page;?>"><i class="icon-pencil" id="edt<?php echo $id[$i];?>"></i></a>
+              <a href="<?php echo base_url();?>admin/delDomain/<?php echo $id[$i];?>" role="button" onClick="return confirm('Are you really want to remove this data?');"><i class="icon-remove"></i></a>
           </td>
         </tr>
         <?php
@@ -53,7 +98,10 @@
 <font color="red"></font>
     <ul>    
     <?php for($i=1;$i<=$totpage;$i++){
-        echo "<li><a href=\"".base_url()."admin/domain/$i\">".$i."</a></li>";
+    	if($i==$page)
+    		echo "<li><a><font color='black'>".$i."</font></a></li>";
+    	else
+       		echo "<li><a href=\"".base_url()."admin/domain/$i\">".$i."</a></li>";
      } ?>
     </ul>
 </div>
