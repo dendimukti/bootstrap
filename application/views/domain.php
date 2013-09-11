@@ -1,5 +1,4 @@
     <link rel="stylesheet" href="<?php echo base_url();?>jquery-ui-1.8.1.custom/css/custom-theme/jquery-ui-1.8.1.custom.css">
-    <script src="<?php echo base_url();?>jquery-ui-1.8.1.custom/js/jquery-1.4.2.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url();?>jquery-ui-1.8.1.custom/js/jquery-ui-1.8.1.custom.min.js" type="text/javascript"></script>
 
 <script>

@@ -2,6 +2,9 @@
 
 class app extends CI_Controller {
 	
+	var $company_email="dendimukti@gmail.com";
+	var $company_name="qwerty";
+	
 	public function __construct(){
 		parent::__construct();
 		$this->load->library('session');
@@ -17,12 +20,12 @@ class app extends CI_Controller {
 		$this->_is_logged_in();
 	}
 	
-	function mailer($from,$name,$to,$cc,$bcc,$subject,$message){
+	private function mailer($from,$name,$to,$cc,$bcc,$subject,$message){
 		$config['protocol'] = 'smtp';
 		$config['smtp_host'] = 'ssl://smtp.googlemail.com';
 		$config['smtp_port'] = 465;
 		$config['smtp_user'] = 'dendimukti@gmail.com';
-		$config['smtp_pass'] = '*************';
+		$config['smtp_pass'] = 'xxxxxxxxxx';
 		$config['priority'] = 1;
 		$config['mailtype'] = 'text';
 		$config['charset'] = 'iso-8859-1';
@@ -51,12 +54,14 @@ class app extends CI_Controller {
 			$this->homelog();
 		else if($sess==2)
 			redirect('admin','refresh');
+		else if($sess==9)
+			$this->ActivateYourEmail();
 		else
 			$this->formLogin();
 	}
 	
 	function logout(){
-			if($this->session->userdata('stat')>0){
+			if($this->session->userdata('stat')!=null){
 				$this->session->sess_destroy();
 				redirect('app/');
 			}
@@ -97,7 +102,10 @@ class app extends CI_Controller {
 					$pwd=$this->input->post('password');
 					if($this->member->logIn($usr,$pwd)){
 						$data=$this->member->dataLogIn($usr,$this->member->encr($pwd));
-						$this->session->set_userdata('stat','1');
+						if($data['status']==1)
+							$this->session->set_userdata('stat','1');
+						else if($data['status']==0)
+							$this->session->set_userdata('stat','9');
 						$this->session->set_userdata('id',$data['id']);
 						
 						if(isset($_POST['rememberme'])){
@@ -130,7 +138,9 @@ class app extends CI_Controller {
 				$data['pesan'] = "Invalid Old Password";
 				
 			$this->load->view('reset-password', $data);	
-		}else
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		else
 			$this->forbid();		
 	}
 	
@@ -166,7 +176,9 @@ class app extends CI_Controller {
 				}				
 			}else
 				$this->notFound();
-		}else
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		else
 			$this->notFound();
 	}
 	
@@ -214,22 +226,23 @@ class app extends CI_Controller {
 					redirect("app/forgotPassword/invalid");
 				else{
 					$from="dendimukti@gmail.com";
-					$name="company";
+					$name="qwerty";
 					$to=$this->input->post('email');
 					$cc="";
 					$bcc="";
-					$subj="new password";
-					$msg=$this->member->kode();
+					$subj="Your New Password";
+					$pwd=$this->member->generate_kode($this->member->kode(10));
+					$msg="Your New Password :\n".$pwd;
 					$dat=$this->member->dataMemberByEmail($to);
 					if ($this->member->cekEmail($to)){
 						$this->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
-						$this->member->changePass($dat['id'][0],$this->member->encr($msg));
+						$this->member->changePass($dat['id'][0],$this->member->encr($pwd));
 						redirect("app/formLogin");
 					}else
 						redirect("app/forgotPassword/notExistEmail");
-
+						
 					redirect('app');
-				}								
+				}
 			}else
 				$this->notFound();
 		}else
@@ -270,8 +283,19 @@ class app extends CI_Controller {
 					if($pwd!=$pwdconf)
 						redirect("app/signUp/unmacthpwd");
 					
+					
+					$from=$this->company_email;
+					$name=$this->company_name;
+					$to=$email;
+					$cc="";
+					$bcc="";
+					$subj="Activation Code";
 				//	$this->mailer($email,"Activating Account","Test");
-					$this->member->signUp($usr,$this->member->encr($pwd),$first,$last,$email);
+					$reg_code=$this->member->generate_reg_kode($this->member->kode(20));
+					$msg="Click this link below to activate your account \n".base_url()."app/activate/".$reg_code;
+					
+					$this->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
+					$this->member->signUp($usr,$this->member->encr($pwd),$first,$last,$email,$reg_code);
 					redirect('app');
 				}					
 								
@@ -293,7 +317,9 @@ class app extends CI_Controller {
 			$this->load->view('index-sidebar', $data);
 			$this->load->view('userEdit', $data);
 			$this->load->view('index-footer');
-		}else
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		else
 			$this->forbid();		
 	}
 	
@@ -322,7 +348,9 @@ class app extends CI_Controller {
 			$this->load->view('index-sidebar', $data);
 			$this->load->view('index-content', $data);
 			$this->load->view('index-footer');
-		}
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		
 		else
 			$this->forbid();		
 	}
@@ -409,7 +437,9 @@ class app extends CI_Controller {
 			$this->load->view('index-sidebar', $data);
 			$this->load->view('userEdit', $data);
 			$this->load->view('index-footer');
-		}else
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		else
 			$this->forbid();
 	}
 	
@@ -442,11 +472,31 @@ class app extends CI_Controller {
 				}
 			}else
 				$this->notFound();
-		}else
+		}else if($this->session->userdata('stat')==9)
+			$this->ActivateYourEmail();
+		else			
 			$this->notFound();
 	}
 	
-
+	function activate($code=null){
+		if($this->session->userdata('stat')==9){
+			if($code==null )
+				$this->forbid();
+			else{
+				$this->load->model('member');
+				$active=$this->member->activateMember($code);
+				if($active){
+					$this->session->set_userdata('stat','1');
+					redirect('app/');
+				}
+				else
+					redirect('app/ActivateYourEmail');
+			}
+		}else if($this->session->userdata('stat')==null)
+			redirect('app/formLogin');
+		else
+			$this->forbid();
+	}
 	
 	function forbid(){		
 		$this->load->view('403');
@@ -454,5 +504,9 @@ class app extends CI_Controller {
 	
 	function notFound(){		
 		$this->load->view('404');
+	}
+	
+	function ActivateYourEmail(){		
+		$this->load->view('unactivated');
 	}
 }

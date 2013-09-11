@@ -16,10 +16,10 @@ class member extends CI_Model {
 			return false;	
     }
     
-    function kode(){
+    function kode($long=10){
 		$data=array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
 		$kode="";
-		for($a=1;$a<=10;$a++)
+		for($a=1;$a<=$long;$a++)
 			$kode .= $data[rand(0,35)];
 		return $kode;
 	}
@@ -31,7 +31,16 @@ class member extends CI_Model {
 		if($data==0)
 			return $kd;
 		else
-			$this->generate_kode($this->kode());
+			$this->generate_kode($this->kode(10));
+	}
+	
+	function generate_reg_kode($kd){
+		$que_cek=mysql_query("select * from member where reg_code='$kd'");
+		$data=mysql_num_rows($que_cek);
+		if($data==0)
+			return $kd;
+		else
+			$this->generate_kode($this->kode(20));
 	}
     
     	
@@ -115,9 +124,9 @@ class member extends CI_Model {
 		return $data;
 	}
 
-    function signUp($usr,$pwd,$first,$last,$email)
+    function signUp($usr,$pwd,$first,$last,$email,$reg_code)
     {		
-        $this->db->query("insert into member values('','$usr','$pwd','$first','$last','0','$email',now(),'')");
+        $this->db->query("insert into member values('','$usr','$pwd','$first','$last','0','$email',now(),'','$reg_code')");
     }
 
     function changePass($id,$newpwd)
@@ -128,6 +137,18 @@ class member extends CI_Model {
     function editMember($id,$first,$last,$email,$addr)
     {
         $this->db->query("update member set first_nm='$first', last_nm='$last', email='$email', address='$addr' where id='$id'");
+    }
+    
+    function activateMember($reg)
+    {
+    	$query = $this->db->query("select * from member where reg_code='".$reg."'");
+    	$data=false;	
+		if ($query->num_rows() > 0)
+		{
+		   $data = true;
+		   $this->db->query("update member set status='1' where reg_code='$reg'");
+		}
+        return $data;
     }
     
 	function cekPwd($id,$pwd)
