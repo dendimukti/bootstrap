@@ -225,8 +225,8 @@ class app extends CI_Controller {
 				if ($this->form_validation->run() == FALSE)		
 					redirect("app/forgotPassword/invalid");
 				else{
-					$from="dendimukti@gmail.com";
-					$name="qwerty";
+					$from=$this->company_email;
+					$name=$this->company_name;
 					$to=$this->input->post('email');
 					$cc="";
 					$bcc="";
