@@ -5,8 +5,37 @@ class member extends CI_Model {
     {
         parent::__construct();
         $this->load->database();
+        $this->load->library('email');
     }
     
+	
+	function mailer($from,$name,$to,$cc,$bcc,$subject,$message){
+		$config['protocol'] = 'smtp';
+		$config['smtp_host'] = 'ssl://smtp.googlemail.com';
+		$config['smtp_port'] = 465;
+		$config['smtp_user'] = 'dendimukti@gmail.com';
+		$config['smtp_pass'] = 'xxxxxxxxxx';
+		$config['priority'] = 1;
+		$config['mailtype'] = 'text';
+		$config['charset'] = 'iso-8859-1';
+		$config['wordwrap'] = TRUE;
+		$this->load->library('email', $config);
+		$this->email->set_newline("\r\n");
+		
+		$this->email->from($from, $name);
+		$this->email->to($to); 		
+		$this->email->cc($cc); 
+		$this->email->bcc($bcc); 
+		$this->email->subject($subject);
+		$this->email->message($message);	
+		
+		//$this->email->send();
+		
+		if(!$this->email->send()) {
+			show_error($this->email->print_debugger());
+		}
+	}
+	
     function logIn($usr,$pwd)
     {    	
     	$query = $this->db->query("select * from member where username='$usr' and password='".md5("program cinta".hash('sha512',$pwd))."'");

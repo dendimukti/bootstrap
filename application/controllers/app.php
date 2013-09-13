@@ -19,33 +19,6 @@ class app extends CI_Controller {
 	{
 		$this->_is_logged_in();
 	}
-	
-	private function mailer($from,$name,$to,$cc,$bcc,$subject,$message){
-		$config['protocol'] = 'smtp';
-		$config['smtp_host'] = 'ssl://smtp.googlemail.com';
-		$config['smtp_port'] = 465;
-		$config['smtp_user'] = 'dendimukti@gmail.com';
-		$config['smtp_pass'] = 'xxxxxxxxxx';
-		$config['priority'] = 1;
-		$config['mailtype'] = 'text';
-		$config['charset'] = 'iso-8859-1';
-		$config['wordwrap'] = TRUE;
-		$this->load->library('email', $config);
-		$this->email->set_newline("\r\n");
-		
-		$this->email->from($from, $name);
-		$this->email->to($to); 		
-		$this->email->cc($cc); 
-		$this->email->bcc($bcc); 
-		$this->email->subject($subject);
-		$this->email->message($message);	
-		
-		//$this->email->send();
-		
-		if(!$this->email->send()) {
-			show_error($this->email->print_debugger());
-		}
-	}
 	public function _is_logged_in(){
 		
 		$this->load->helper('url');		
@@ -235,7 +208,7 @@ class app extends CI_Controller {
 					$msg="Your New Password :\n".$pwd;
 					$dat=$this->member->dataMemberByEmail($to);
 					if ($this->member->cekEmail($to)){
-						$this->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
+						$this->member->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
 						$this->member->changePass($dat['id'][0],$this->member->encr($pwd));
 						redirect("app/formLogin");
 					}else
@@ -294,7 +267,7 @@ class app extends CI_Controller {
 					$reg_code=$this->member->generate_reg_kode($this->member->kode(20));
 					$msg="Click this link below to activate your account \n".base_url()."app/activate/".$reg_code;
 					
-					$this->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
+					$this->member->mailer($from,$name,$to,$cc,$bcc,$subj,$msg);
 					$this->member->signUp($usr,$this->member->encr($pwd),$first,$last,$email,$reg_code);
 					redirect('app');
 				}					
